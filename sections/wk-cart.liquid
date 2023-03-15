@@ -1,47 +1,10 @@
-{% assign _SERVER_ = 'https://sp-seller.webkul.com/' %}
-
-{% assign _DSM_SERVER_ = 'https://app-sp.webkul.com/delivery-slot-management/web/' %}
-
-{% assign _BOOKING_COMMERCE_SERVER_PATH_ = 'bookingcommerce.com' %}
-
-{% assign draft_order_enabled = 0 %}
-
-{% assign pickup_by_cart_enabled = 0 %}
-{% assign delivery_slot_management_enabled = 0 %}
-
-{% if shop.metafields.dsm_widget == null or shop.metafields.dsm_widget.dsm_widget_allow_page == 'Product Page' %}
-
-  {% assign delivery_slot_management_enabled = 0 %}
-
-{% endif %}
-{% if delivery_slot_management_enabled == 1 %}
-
-  <script src="{{ _DSM_SERVER_ }}shopify-widget/widget.js"></script>
-  <link rel="stylesheet" href="{{ _DSM_SERVER_ }}shopify-widget/widget.css">
-
-  {{ "https://bookingcommerce.com/widget/js/tiny-date-picker.min.js" | script_tag }}
-  {{ "https://bookingcommerce.com/widget/js/moment.js" | script_tag }}
-  {{ "https://bookingcommerce.com/widget/js/moment-timezone.js" | script_tag }}
-  {{ "https://bookingcommerce.com/widget/js/moment-timezone-with-data.min.js" | script_tag }}
-
-  <link href="https://bookingcommerce.com/widget/css/tiny-date-picker.css" rel="stylesheet">
-  <link href="https://bookingcommerce.com/widget/css/tiny-daterange-picker.css" rel="stylesheet">
-  <link href="https://bookingcommerce.com/widget/css/font.css" rel="stylesheet">
-
-  {%- assign dsmConfig = shop.metafields.dsm_widget | json -%}
-  {%- assign dsmLabels = shop.metafields.dsm_labels | json -%}
-
-  <script>
-    const dsmVendors = {};
-  </script>
-
-{% endif %}
-
 <div class="wk-main-conent__split-cart">
   <script src="//ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js" type="text/javascript"></script>
-  <input type="hidden"
+  <input
+    type="hidden"
     id="server_name"
-    value={{ _SERVER_ }}>
+    value="{{ _SERVER_ }}"
+  >
   {% comment %}
     <div class='rte'>
     <div class='mp_sp_page' data-cust='{{ customer.id }}'></div>
@@ -50,7 +13,8 @@
     <div class='title-text'>Please Wait...</div>
     </div>
     </div>
-  {% endcomment %}<script>
+  {% endcomment %}
+  <script>
     var from_cart_page = true;
     var server_name = document.getElementById("server_name").value;
     var draft_order_enabled = "{{draft_order_enabled}}";
@@ -76,17 +40,19 @@
     <div
       class=""
       id="wk_minimum_purchase_div"
-      style="display:none;"></div>
+      style="display:none;"
+    ></div>
     <form
       action="/cart"
       method="post"
-      novalidate>
-      {% assign tem_vendor_wise_products = "" %}
+      novalidate
+    >
+      {% assign tem_vendor_wise_products = '' %}
       {% for item in cart.items %}
         {% assign tem_vendor_wise_products = tem_vendor_wise_products | append: item.vendor | append: '$!$' %}
       {% endfor %}
       {% assign vendor_wise_products = tem_vendor_wise_products | split: '$!$' | uniq %}
-      {% assign vendors = "" %}
+      {% assign vendors = '' %}
       <script>
         var vendors = "{{tem_vendor_wise_products|replace:"&amp;","&"}}"
         var vend = {{vendor_wise_products|json}};
@@ -95,9 +61,9 @@
         if (order_note1) {
           order_note1 = JSON.parse(order_note1);
           for (j = 0; j < vend.length; j ++) {
-            if (order_note1[vend[j]] != undefined) 
+            if (order_note1[vend[j]] != undefined)
               new_order_note[vend[j]] = order_note1[vend[j]];
-            
+
           }
 
         }
@@ -111,9 +77,9 @@
             {}),
           e += "?" + function(e) {
             var o = [];
-            for (var t in e) 
+            for (var t in e)
               e.hasOwnProperty(t) && o.push(encodeURIComponent(t) + "=" + encodeURIComponent(e[t]));
-            
+
             return o.join("&")
           }(o);
           var i = new XMLHttpRequest;
@@ -122,15 +88,15 @@
           i.open("GET", a),
           i.setRequestHeader("token", m),
           i.onload = function() {
-            if (200 === i.status) 
+            if (200 === i.status)
               try {
                 r(JSON.parse(i.responseText))
               }
              catch (e) {
               r(i.responseText)
-            } else 
+            } else
               r({error: i.status})
-            
+
           },
           i.send()
         }
@@ -155,12 +121,12 @@
         }
       </script>
 
-
       {% for vendor in vendor_wise_products %}
-        {% assign cart_loc_array = "" %}
+        {% assign cart_loc_array = '' %}
 
         <div style="padding: 5px; font-size: 16px; color:#333; font-weight: bold; margin-top: 20px;">
-          Sold By {{ vendor }}</div>
+          Sold By {{ vendor }}
+        </div>
         <table class="wk-split__cart__table">
           <thead>
             <tr>
@@ -172,9 +138,9 @@
           </thead>
           <tbody>
             {% assign total_price = 0 %}
-            {% assign order_note = "" %}
-            {% assign params = "" %}
-            {% assign param = "" %}
+            {% assign order_note = '' %}
+            {% assign params = '' %}
+            {% assign param = '' %}
             {% assign properties = '' %}
             {% assign wk_pay_whatever_extra_price = 0 %}
             {% assign wk_addon_cart_total = 0 %}
@@ -182,14 +148,18 @@
 
             {% for item in cart.items %}
               {% if item.product.tags contains 'preorder' %}
-                <span class='wk_po_count' style='display:none;'></span>
+                <span class="wk_po_count" style="display:none;"></span>
               {% endif %}
               {% assign wk_addon_price = 0 %}
-              {% if item.product.tags contains 'wk_slot' and customer != empty and customer.tags contains 'VIP' or customer.tags contains 'GOLD' %}
-                <span class='wk_slot_count' style='display:none;'></span>
+              {% if item.product.tags contains 'wk_slot'
+                and customer != empty
+                and customer.tags contains 'VIP'
+                or customer.tags contains 'GOLD'
+              %}
+                <span class="wk_slot_count" style="display:none;"></span>
               {% endif %}
-              {% if item.product.tags contains 'wk_pay_what_you_want' and item.properties['wk_custom_price'] %}
-                <span class='wk_pay_what_you_want_count_split_cart' style='display:none;'></span>
+              {% if item.product.tags contains 'wk_pay_what_you_want' and item.properties.wk_custom_price %}
+                <span class="wk_pay_what_you_want_count_split_cart" style="display:none;"></span>
               {% endif %}
 
               {% if item.vendor == vendor %}
@@ -198,7 +168,9 @@
                 {% endunless %}
                 <tr data-line="{{ forloop.index }}">
                   <td class="item-image">
-                    <a href="{{ item.url }}"><img src="{{ item | img_url: 'medium' }}" alt="{{ item.title | escape }}"></a>
+                    <a href="{{ item.url }}"
+                      ><img src="{{ item | img_url: 'medium' }}" alt="{{ item.title | escape }}"
+                    ></a>
                   </td>
                   <td class="item-name">
                     <div>
@@ -210,7 +182,11 @@
                         <small style="font-size: 13px;color: #d22573;">{{ item.variant.title }}</small>
                       {% endunless %}
 
-                      {% if settings.product_quantity_message and item.variant.inventory_management and item.variant.inventory_quantity <= 0 and item.variant.incoming %}
+                      {% if settings.product_quantity_message
+                        and item.variant.inventory_management
+                        and item.variant.inventory_quantity <= 0
+                        and item.variant.incoming
+                      %}
                         {% assign date = item.variant.next_incoming_date | date: format: 'month_day_year' %}
                         <p>
                           <small>{{ 'products.product.will_not_ship_until' | t: date: date }}</small>
@@ -220,18 +196,18 @@
                       {% assign property_size = item.properties | size %}
                       {% assign total_price = total_price | plus: item.line_price %}
                       {% assign properties = item.properties | json %}
-                      {% assign params = params | append: item.id | append: "&*#*&" | append: item.quantity %}
+                      {% assign params = params | append: item.id | append: '&*#*&' | append: item.quantity %}
                       {% if property_size > 0 %}
                         {% assign params = params | append: '&*#*&{"' %}
                         <div class="cart__meta-text">
                           {% for p in item.properties %}
-
                             {% if forloop.first %}<br>{% endif %}
                             {% assign params = params | append: p.first | append: '":"' | append: p.last %}
                             {% assign first_character_in_key = p.first | truncate: 1, '' %}
                             {% unless p.last == blank or first_character_in_key == '_' or p.first == 'wk_cart_loc' %}
                               {% if p.first contains 'Extra/' %}
-                                {% assign wk_addon_price = p.last | times: 100 | plus: wk_addon_price %}<span class='wk_addon_count' style='display:none;'></span>
+                                {% assign wk_addon_price = p.last | times: 100 | plus: wk_addon_price -%}
+                                <span class="wk_addon_count" style="display:none;"></span>
                               {% endif %}
                               {{ p.first }}:
                               {% if p.last contains '/uploads/' %}
@@ -249,10 +225,12 @@
                             {% endif %}
                           {% endfor %}
                           {% unless item.product.published_at %}
-                            <span class="out_of_stock" style="color:red;">Product is no more available please remove this from cart and proceed.</span>
+                            <span class="out_of_stock" style="color:red;"
+                              >Product is no more available please remove this from cart and proceed.</span
+                            >
                           {% endunless %}
                         </div>
-                        {% assign params = params | append: "}" %}
+                        {% assign params = params | append: '}' %}
                       {% endif %}
                       {% assign wk_addon_line_price = wk_addon_price | times: item.quantity %}
                       {% assign total_price = total_price | plus: wk_addon_line_price %}
@@ -261,7 +239,8 @@
                       <a
                         href="/cart/change?line={{ forloop.index }}&amp;quantity=0"
                         data-line="{{ forloop.index }}"
-                        onclick="wkRemoveItem('{{ vendor | escape }}')">
+                        onclick="wkRemoveItem('{{ vendor | escape }}')"
+                      >
                         <span class="wk-trash-icon" aria-hidden="true"></span>
                         <span>Remove</span>
                       </a>
@@ -269,11 +248,16 @@
                   </td>
                   <td class="item-price">
                     <span
-                      {% if item.product.tags contains 'wk_slot' and customer != empty and customer.tags contains 'VIP' or customer.tags contains 'GOLD' %}
-                      id='price_{{item.variant_id}}'
-                      {% endif %}>
-                      {% if item.product.tags contains 'wk_pay_what_you_want' and item.properties['wk_custom_price'] %}
-                        {{ item.properties['wk_custom_price'] | times: 100 | money }}
+                      {% if item.product.tags contains 'wk_slot'
+                        and customer != empty
+                        and customer.tags contains 'VIP'
+                        or customer.tags contains 'GOLD'
+                      %}
+                        id="price_{{item.variant_id}}"
+                      {% endif %}
+                    >
+                      {% if item.product.tags contains 'wk_pay_what_you_want' and item.properties.wk_custom_price %}
+                        {{ item.properties.wk_custom_price | times: 100 | money }}
                       {% else %}
                         {{ item.price | plus: wk_addon_price | money }}
                       {% endif %}
@@ -281,9 +265,14 @@
                   </td>
                   <td class="item-qty">
                     <span
-                      {% if item.product.tags contains 'wk_slot' and customer != empty and customer.tags contains 'VIP' or customer.tags contains 'GOLD' %}
-                      id='qty_{{item.variant_id}}'
-                      {% endif %}>
+                      {% if item.product.tags contains 'wk_slot'
+                        and customer != empty
+                        and customer.tags contains 'VIP'
+                        or customer.tags contains 'GOLD'
+                      %}
+                        id="qty_{{item.variant_id}}"
+                      {% endif %}
+                    >
                       <input
                         type="number"
                         name="updates[{{item.id}}]"
@@ -293,37 +282,53 @@
                         min="0"
                         data-line="{{ forloop.index }}"
                         style="margin: 0px 10px 10px 0px;"
-                        {% if item.product.tags contains "wk_booking" %}disabled{% endif %}>
+                        {% if item.product.tags contains 'wk_booking' %}
+                          disabled
+                        {% endif %}
+                      >
                     </span>
-                    {% unless item.product.tags contains "wk_booking" %}<input
+                    {% unless item.product.tags contains 'wk_booking' -%}
+                      <input
                         type="submit"
                         name="update[{{item.id}}]"
                         id="wk-update-quantity"
                         onclick="wkRemoveItem('{{ vendor | escape }}')"
                         class="wk-btn-secondary"
-                        value="Update">{% endunless %}
+                        value="Update"
+                      >
+                    {%- endunless %}
                   </td>
                   <td style="text-align: right;" class="item-subtotal">
                     <span
-                      {% if item.product.tags contains 'wk_slot' and customer != empty and customer.tags contains 'VIP' or customer.tags contains 'GOLD' %}
-                      id='total_price_{{item.variant_id}}'
-                      {% endif %}>
-                      {% if item.product.tags contains 'wk_pay_what_you_want' and item.properties['wk_custom_price'] %}
-                        {% assign pay_whatever_line_price = item.properties['wk_custom_price'] | times: item.quantity | times: 100 %}
+                      {% if item.product.tags contains 'wk_slot'
+                        and customer != empty
+                        and customer.tags contains 'VIP'
+                        or customer.tags contains 'GOLD'
+                      %}
+                        id="total_price_{{item.variant_id}}"
+                      {% endif %}
+                    >
+                      {% if item.product.tags contains 'wk_pay_what_you_want' and item.properties.wk_custom_price %}
+                        {% assign pay_whatever_line_price = item.properties.wk_custom_price
+                          | times: item.quantity
+                          | times: 100
+                        %}
                         {{ pay_whatever_line_price | money }}
-                        {% assign wk_pay_whatever_extra_price = pay_whatever_line_price | minus: item.line_price | plus: wk_pay_whatever_extra_price %}
+                        {% assign wk_pay_whatever_extra_price = pay_whatever_line_price
+                          | minus: item.line_price
+                          | plus: wk_pay_whatever_extra_price
+                        %}
                       {% else %}
                         {{ item.line_price | plus: wk_addon_line_price | money }}
                       {% endif %}
                     </span>
                   </td>
-                  {% assign param = param | append: item.id | append: ":" | append: item.quantity %}
-                  {% assign param = param | append: "," %}
-                  {% assign params = params | append: "$^$" %}
+                  {% assign param = param | append: item.id | append: ':' | append: item.quantity %}
+                  {% assign param = param | append: ',' %}
+                  {% assign params = params | append: '$^$' %}
                 </tr>
               {% endif %}
             {% endfor %}
-
           </tbody>
         </table>
 
@@ -332,38 +337,45 @@
             <div class="wk-cart-pickup-div">
               <div id="wkCartLoc_{{vendor | replace : " ", "_"}}" class="wk-cart-pickup">
                 <div
-                  class='wk-pickup-by-cart'
+                  class="wk-pickup-by-cart"
                   id="pickup-by-cart{{vendor | replace : " ", "_"}}"
-                  style="display:none">
-                  <h2 class='want_order_as_label'>
-                    Want Order As
-                  </h2>
-                  <span id="{{vendor | replace : " ", "_"| append : '_delivery_p'}}"><input
-                      type='radio'
-                      class='wk-radio'
+                  style="display:none"
+                >
+                  <h2 class="want_order_as_label">Want Order As</h2>
+                  <span id="{{vendor | replace : " ", "_"| append : '_delivery_p'}}"
+                    ><input
+                      type="radio"
+                      class="wk-radio"
                       name="{{vendor | append : 'attributes-store_pickup'}}"
                       id="{{vendor | replace : " ", "_"| append : '_delivery'}}"
-                      value='NO'
-                      style='min-height:0;'> Delivery
+                      value="NO"
+                      style="min-height:0;"
+                    >
+                    Delivery
                   </span>
-                  <br><span id="{{vendor | replace : " ", "_"| append : '_store_pickup_p'}}"><input
-                      type='radio'
-                      class='wk-radio'
+                  <br>
+                  <span id="{{vendor | replace : " ", "_"| append : '_store_pickup_p'}}"
+                    ><input
+                      type="radio"
+                      class="wk-radio"
                       name="{{vendor | append : 'attributes-store_pickup'}}"
                       id="{{vendor | replace : " ", "_"| append : '_store_pickup'}}"
-                      value='YES'
-                      style='min-height:0;'> Store Pickup
+                      value="YES"
+                      style="min-height:0;"
+                    >
+                    Store Pickup
                   </span>
-                  <br><p id="{{vendor | replace : " ", "_"| append : '_note'}}" style="display:none">
-                    <strong>Note :
-                    </strong>
+                  <br>
+                  <p id="{{vendor | replace : " ", "_"| append : '_note'}}" style="display:none">
+                    <strong>Note : </strong>
                     Only Store Pickup Available For This Order
                   </p>
                   <select
-                    class='wk_cart_pickup_locations'
-                    id='cart_pickup_{{vendor| replace : " ", "_"}}'
+                    class="wk_cart_pickup_locations"
+                    id="cart_pickup_{{vendor| replace : " ", "_"}}"
                     style="display:none"
-                    name='attribites[store_pickup_address]'></select>
+                    name="attribites[store_pickup_address]"
+                  ></select>
                 </div>
               </div>
               <div id="wkCartLocError_{{vendor | replace : " ", "_"}}" class="wk-cart-pickup-loc-error"></div>
@@ -375,18 +387,19 @@
               <textarea
                 name="note"
                 class="input-full cartSpecialInstructions"
-                id="cartSpecialInstructions_{{vendor}}">{{ cart_loc_array }}</textarea>
+                id="cartSpecialInstructions_{{vendor}}"
+              >{{ cart_loc_array }}</textarea>
             </div>
 
             {% if delivery_slot_management_enabled == 1 %}
-
-              {%- assign dsmVendor = vendor | replace: " ", "_" -%}
+              {%- assign dsmVendor = vendor | replace: ' ', '_' -%}
 
               <div
                 id="dsm-split-cart-widget_{{ dsmVendor }}"
                 class="dsm-split-cart-widget"
                 data-vendor-name="{{ vendor }}"
-                data-vendor="{{ vendor | replace: "&amp;", "&" | escape }}">
+                data-vendor="{{ vendor | replace: "&amp;", "&" | escape }}"
+              >
                 <div class="wk-cart-widget" id="wk-cart-widget">
                   <div class="wk-cart-widget-wrapper">
                     <div id="wk-delivery-methods-container">
@@ -397,7 +410,10 @@
                             value=""
                             disabled
                             selected
-                            hidden>{{ shop.metafields.dsm_labels.label_10 }}</option>
+                            hidden
+                          >
+                            {{ shop.metafields.dsm_labels.label_10 }}
+                          </option>
                         </select>
                       </div>
                     </div>
@@ -405,7 +421,8 @@
                     <input
                       type="hidden"
                       name="attributes[Delivery Slot Management]"
-                      value="false">
+                      value="false"
+                    >
                     <input type="hidden" name="attributes[Delivery From]">
                     <input type="hidden" name="attributes[Delivery To]">
                     <input type="hidden" name="attributes[__Delivery Timezone]">
@@ -426,20 +443,20 @@
                   };
                 </script>
               </div>
-
             {% endif %}
           </div>
           <div class="wk-order-subtotal">
-            <span style="font-weight: bold;">
-              Subtotal
-            </span>
+            <span style="font-weight: bold;"> Subtotal </span>
             <span
               style="padding-left: 30px;"
               data-price="{{ total_price | plus: wk_pay_whatever_extra_price}}"
-              data-currency={{cart.currency.iso_code}}
-              data-wk_slot_subtotal='wk_slot'
-              data-wk_selected_tag='{% if customer.tags contains 'VIP' %}VIP{% elsif customer.tags contains 'GOLD' %}GOLD{% endif %}'
-              id="wk_subtotal_{{ vendor | replace: ' ', ''}}">{{ total_price | plus: wk_pay_whatever_extra_price | money }}</span>
+              data-currency="{{cart.currency.iso_code}}"
+              data-wk_slot_subtotal="wk_slot"
+              data-wk_selected_tag="{% if customer.tags contains 'VIP' %}VIP{% elsif customer.tags contains 'GOLD' %}GOLD{% endif %}"
+              id="wk_subtotal_{{ vendor | replace: ' ', ''}}"
+            >
+              {{- total_price | plus: wk_pay_whatever_extra_price | money -}}
+            </span>
             <p class="cart-subtotal__note">
               <em>Shipping, taxes, and discounts will be calculated at checkout.</em>
             </p>
@@ -449,16 +466,16 @@
             {% assign params = params | slice: 0, size %}
             <script>
               var setToSessionStorage = function(time, vendor, params, vendor_wise_products, count) {
-                if (count > 10) 
+                if (count > 10)
                   return false;
-                
+
                 setTimeout(() => {
                   if (typeof window.wk_loaded != "undefined" && window.wk_loaded) {
                     sessionStorage.setItem(vendor, params)
                     sessionStorage.setItem("WK_SHOPIFY_SPLIT_CART", vendor_wise_products)
-                  } else 
+                  } else
                     setToSessionStorage(time + 5000, vendor, params, vendor_wise_products, count++);
-                  
+
                 }, time)
               }
               setToSessionStorage(0, {{ vendor | json }}, {{ params | json}}, {{ vendor_wise_products | json }}, 0);
@@ -469,47 +486,57 @@
                 order_note = JSON.parse(order_note)
                 order_note = order_note[{{vendor | json}}]
                 if (document.getElementById("cartSpecialInstructions_ {{vendor}}") != null) {
-                  if (typeof order_note != "undefined") 
+                  if (typeof order_note != "undefined")
                     document.getElementById("cartSpecialInstructions_ {{vendor}}").value = order_note;
-                   else 
+                   else
                     document.getElementById("cartSpecialInstructions_ {{vendor}}").value = "";
-                  
+
                 }
               }
             </script>
             <div style="margin-top: 15px;">
-              <a href="/collections/vendors?q={{ vendor | url_param_escape }}" class="wk-continue-shopping">Continue shopping</a>
+              <a href="/collections/vendors?q={{ vendor | url_param_escape }}" class="wk-continue-shopping"
+                >Continue shopping</a
+              >
               {% if all_product_available %}
                 <a
                   href="cart/"
                   target="_blank"
-                  id="checkout_id">
+                  id="checkout_id"
+                >
                   <button
                     type="button"
                     class="wk-buy"
                     data-params="{{param}}"
-                    data-vendor="{{ vendor|replace: "&amp;", "&" | escape }}">Buy from this seller</button>
+                    data-vendor="{{ vendor|replace: "&amp;", "&" | escape }}"
+                  >
+                    Buy from this seller
+                  </button>
                 </a>
               {% endif %}
             </div>
-            <span id="wk_cart_error_{{vendor | replace: ' ', '_'}}" style="display:none">Store Closed, Try after some time</span>
+            <span id="wk_cart_error_{{vendor | replace: ' ', '_'}}" style="display:none"
+              >Store Closed, Try after some time</span
+            >
           </div>
         </div>
-        {% comment %}Route Insurance Code
-          <div class="WkRouteWidget" data-insurance_checked = false id="route_insurance_{{vendor| replace: ' ', '_' | replace: "&amp;", "&" | escape}}"><div class="route-div"><div class="route-widget-slider"><div class="route-widget mobile-align-undefined desktop-align-undefined"><span></span><div class="rw-contents"><div class="rw-left"><img class="rw-route-logo" src="https://cdn.routeapp.io/route-widget-shopify/stable/images/RoutePlusGray.svg" style="display: inline-block;"><img class="rw-route-logo-white" src="https://cdn.routeapp.io/route-widget-shopify/stable/images/RoutePlusWhite.svg" style="display: inline-block;"></div><div class="rw-center"><div class="rw-text-top">Shipping Protection<span class="rw-info">i</span></div><div class="rw-text-bottom">from Damage, Loss &amp; Theft for <strong class="getInsurencePrice" id="insurance_price_{{vendor |replace: " ", "_"}}" data-vendor="{{vendor |replace: " ", "_"}}" data-price="0" style="cursor: pointer">Click to calculate...</strong></div></div><div class="rw-right"><span class="rw-checkbox-span rw-unchecked"  data-vendor="{{vendor |replace: " ", "_"}}"><span class="rw-slider rw-unchecked"></span><span class="rw-on-text rw-unchecked">On</span><span class="rw-off-text rw-unchecked">Off</span></span></div></div></div></div></div></div>
-          <script> get_quote_vendor(route_public_token, {{ total_price | plus: wk_pay_whatever_extra_price}}/100, "{{cart.currency.iso_code}}" , update_price, "insurance_price_{{vendor |replace: " ", "_"}}");</script> 
-        Route Insurance code Ended{% endcomment %}
+        {% comment %}
+          Route Insurance Code
+            <div class="WkRouteWidget" data-insurance_checked = false id="route_insurance_{{vendor| replace: ' ', '_' | replace: "&amp;", "&" | escape}}"><div class="route-div"><div class="route-widget-slider"><div class="route-widget mobile-align-undefined desktop-align-undefined"><span></span><div class="rw-contents"><div class="rw-left"><img class="rw-route-logo" src="https://cdn.routeapp.io/route-widget-shopify/stable/images/RoutePlusGray.svg" style="display: inline-block;"><img class="rw-route-logo-white" src="https://cdn.routeapp.io/route-widget-shopify/stable/images/RoutePlusWhite.svg" style="display: inline-block;"></div><div class="rw-center"><div class="rw-text-top">Shipping Protection<span class="rw-info">i</span></div><div class="rw-text-bottom">from Damage, Loss &amp; Theft for <strong class="getInsurencePrice" id="insurance_price_{{vendor |replace: " ", "_"}}" data-vendor="{{vendor |replace: " ", "_"}}" data-price="0" style="cursor: pointer">Click to calculate...</strong></div></div><div class="rw-right"><span class="rw-checkbox-span rw-unchecked"  data-vendor="{{vendor |replace: " ", "_"}}"><span class="rw-slider rw-unchecked"></span><span class="rw-on-text rw-unchecked">On</span><span class="rw-off-text rw-unchecked">Off</span></span></div></div></div></div></div></div>
+            <script> get_quote_vendor(route_public_token, {{ total_price | plus: wk_pay_whatever_extra_price}}/100, "{{cart.currency.iso_code}}" , update_price, "insurance_price_{{vendor |replace: " ", "_"}}");</script>
+          Route Insurance code Ended
+        {% endcomment %}
       {% endfor %}
 
       {% if delivery_slot_management_enabled == 1 %}
-
         {% capture file_content %}
           {% include 'dsm-split-cart-helper-widget.liquid' %}{% endcapture %}
-        {% unless file_content contains "Liquid error" %}
+        {% unless file_content contains 'Liquid error' %}
           {{ file_content }}
         {% endunless %}
 
         <script>
+          
           (() => {
             let bcWidgetOptions = {};
             if (typeof options !== 'undefined') {
@@ -578,6 +605,7 @@
                   )
                 });
               })();
+
         </script>
       {% endif %}
       <script>
@@ -617,9 +645,9 @@
                         if (data[vendor]['default_selected'] == "1") { // store_pickup checked
                           $("*[id='" + cart_loc_vendor + "_store_pickup']").prop("checked", true);
                           $("*[id='cart_pickup_" + cart_loc_vendor + "']").show();
-                        } else 
+                        } else
                           $("*[id='" + cart_loc_vendor + "_delivery']").prop("checked", true);
-                        
+
 
                       } else {
                         $("*[id='" + cart_loc_vendor + "_store_pickup']").prop("checked", true);
@@ -685,14 +713,27 @@
     <div id="EmptyCart">
       <h1 class="h2">Your Shopping cart</h1>
       <p class="cart--empty-message">Your cart is currently empty.</p>
-      <p class="cart--continue-message">Continue browsing
-        <a href="/collections/all">here</a>.</p>
+      <p class="cart--continue-message">Continue browsing <a href="/collections/all">here</a>.</p>
     </div>
   {% endif %}
   <div class="route-modal">
     <div class="route-modal-box">
-      <img class="background" src="https://cdn.routeapp.io/route-widget-shopify/stable/images/LightboxBackground.svg"> <img class="route-line" src="https://cdn.routeapp.io/route-widget-shopify/stable/images/RouteLine.png"> <img class="route-rm-close-modal" src="https://cdn.routeapp.io/route-widget-shopify/stable/images/CloseIcon.svg"><div class="route-modal-header">
-        <img class="route-rm-route-logo" src="https://cdn.routeapp.io/route-widget-shopify/stable/images/RouteLogoWhite.svg"> <img class="route-rm-route-logo-color" src="https://cdn.routeapp.io/route-widget-shopify/stable/images/RouteLogoKiona.png"><div class="route-rm-secure-with">Secure your shipment and easily <br> resolve order issues with one tap.</div>
+      <img class="background" src="https://cdn.routeapp.io/route-widget-shopify/stable/images/LightboxBackground.svg">
+      <img class="route-line" src="https://cdn.routeapp.io/route-widget-shopify/stable/images/RouteLine.png">
+      <img class="route-rm-close-modal" src="https://cdn.routeapp.io/route-widget-shopify/stable/images/CloseIcon.svg">
+      <div class="route-modal-header">
+        <img
+          class="route-rm-route-logo"
+          src="https://cdn.routeapp.io/route-widget-shopify/stable/images/RouteLogoWhite.svg"
+        >
+        <img
+          class="route-rm-route-logo-color"
+          src="https://cdn.routeapp.io/route-widget-shopify/stable/images/RouteLogoKiona.png"
+        >
+        <div class="route-rm-secure-with">
+          Secure your shipment and easily <br>
+          resolve order issues with one tap.
+        </div>
       </div>
       <div class="route-modal-content">
         <div class="icon-box1">
@@ -700,43 +741,59 @@
             <img
               class="route-rm-icon-box-image"
               src="https://cdn.routeapp.io/route-widget-shopify/stable/images/Purchase_RoutePlus.svg"
-              alt="Secured your shipment">
+              alt="Secured your shipment"
+            >
           </span>
-          <div class="route-rm-text1">Protect orders from loss,<br> damage, or theft.</div>
+          <div class="route-rm-text1">
+            Protect orders from loss,<br>
+            damage, or theft.
+          </div>
         </div>
         <div class="icon-box2">
           <span class="route-rm-icon-box2">
             <img
               class="route-rm-icon-box-image"
               src="https://cdn.routeapp.io/route-widget-shopify/stable/images/Instant_Protection.svg"
-              alt="Instantly insured">
+              alt="Instantly insured"
+            >
           </span>
-          <div class="route-rm-text2">Backed by Lloyds of<br>London through Route.</div>
+          <div class="route-rm-text2">
+            Backed by Lloyds of<br>
+            London through Route.
+          </div>
         </div>
         <div class="icon-box3">
           <span class="route-rm-icon-box3">
             <img
               class="route-rm-icon-box-image"
               src="https://cdn.routeapp.io/route-widget-shopify/stable/images/LBBox_3.svg"
-              alt="One click claims">
+              alt="One click claims"
+            >
           </span>
-          <div class="route-rm-text3">Refunds or reorders<br> in just a few clicks.</div>
+          <div class="route-rm-text3">
+            Refunds or reorders<br>
+            in just a few clicks.
+          </div>
         </div>
       </div>
       <div class="route-modal-footer">
         <div class="rm-footer-1">
           <div class="route-rm-terms">
-            This optional protection is offered to you solely in order to effectuate the shipment of your package(s). Route is the named assured on the Route Policy of which your shipment will be protected on. The cost of adding your shipment to the Route Policy includes compensation paid to Safe Order Solutions, LLC (a licensed insurance agency affiliate of Route), for making this protection available.</div>
+            This optional protection is offered to you solely in order to effectuate the shipment of your package(s).
+            Route is the named assured on the Route Policy of which your shipment will be protected on. The cost of
+            adding your shipment to the Route Policy includes compensation paid to Safe Order Solutions, LLC (a licensed
+            insurance agency affiliate of Route), for making this protection available.
+          </div>
         </div>
         <div class="rm-footer-2">
-          <div class="route-rm-copyright">
-            Route App © 2020 Route App</div>
+          <div class="route-rm-copyright">Route App © 2020 Route App</div>
           <div class="route-rm-user-privacy">
             <a
               class="route-rm-user-privacy-text"
               href="https://route.com/privacy-page/"
               target="_blank"
-              rel="noopener noreferrer">
+              rel="noopener noreferrer"
+            >
               User Privacy
             </a>
           </div>
@@ -745,35 +802,39 @@
               class="route-rm-terms-of-use-text"
               href="https://route.com/terms-and-conditions/"
               target="_blank"
-              rel="noopener noreferrer">
+              rel="noopener noreferrer"
+            >
               User Terms of Use
             </a>
           </div>
           <div class="route-rm-lloyds-container">
-            Backed by <img
+            Backed by
+            <img
               class="route-rm-lloyds-image"
               src="https://cdn.routeapp.io/route-widget-shopify/stable/images/LloydsLogo.png"
-              alt="Lloyd's of London"></div>
+              alt="Lloyd's of London"
+            >
+          </div>
         </div>
       </div>
     </div>
   </div>
 </div>
 {% schema %}
-  {
-    "name": {
-      "en": "Split Cart"
-    },
-    "settings": [],
-    "presets": [
-      {
-        "name": {
-          "en": "Split Cart"
-        },
-        "category": {
-          "en": "Split Cart"
-        }
+{
+  "name": {
+    "en": "Split Cart"
+  },
+  "settings": [],
+  "presets": [
+    {
+      "name": {
+        "en": "Split Cart"
+      },
+      "category": {
+        "en": "Split Cart"
       }
-    ]
-  }
+    }
+  ]
+}
 {% endschema %}
