@@ -1,7 +1,9 @@
 {
   "sections": {
     "wk-cart": {
-      "type": "wk-cart"
+      "type": "wk-cart",
+      "settings": {
+      }
     },
     "cart-items": {
       "type": "main-cart-items",
@@ -15,18 +17,21 @@
       "blocks": {
         "subtotal": {
           "type": "subtotal",
-          "settings": {}
+          "settings": {
+          }
         },
         "buttons": {
           "type": "buttons",
-          "settings": {}
+          "settings": {
+          }
         }
       },
       "block_order": [
         "subtotal",
         "buttons"
       ],
-      "settings": {}
+      "settings": {
+      }
     }
   },
   "order": [
