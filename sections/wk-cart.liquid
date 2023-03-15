@@ -33,7 +33,7 @@
     }
   </script>
 
-  {{ _SERVER_ | append: 'assets/split-cart/wk-split-cart-thanku.js' | script_tag }}
+  {% comment %}   {{ _SERVER_ | append: 'assets/split-cart/wk-split-cart-thanku.js' | script_tag }} {% endcomment %}
   {{ 'wk-split-cart.css' | asset_url | stylesheet_tag }}
   {% if cart.item_count > 0 %}
     <h1 class="h2">Your Shopping Cart</h1>
@@ -537,6 +537,7 @@
 
         <script>
           
+          
           (() => {
             let bcWidgetOptions = {};
             if (typeof options !== 'undefined') {
@@ -605,6 +606,7 @@
                   )
                 });
               })();
+
 
         </script>
       {% endif %}
