@@ -5,6 +5,8 @@
 {% assign pickup_by_cart_enabled = 0 %}
 {% assign delivery_slot_management_enabled = 0 %}
 
+{% if shop.metafields.dsm_widget == null or shop.metafields.dsm_widget.dsm_widget_allow_page == 'Product Page' %}
+
    {% assign delivery_slot_management_enabled = 0 %}
 
 {% endif %}
