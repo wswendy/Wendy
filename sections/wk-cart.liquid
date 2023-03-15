@@ -1,3 +1,38 @@
+{% assign _SERVER_ = 'https://sp-seller.webkul.com/' %}
+
+{% assign _DSM_SERVER_ = 'https://app-sp.webkul.com/delivery-slot-management/web/' %}
+
+{% assign _BOOKING_COMMERCE_SERVER_PATH_ = 'bookingcommerce.com' %}
+
+{% assign draft_order_enabled = 0 %}
+
+{% assign pickup_by_cart_enabled = 0 %}
+{% assign delivery_slot_management_enabled = 0 %}
+
+{% if shop.metafields.dsm_widget == null or shop.metafields.dsm_widget.dsm_widget_allow_page == 'Product Page' %}
+  {% assign delivery_slot_management_enabled = 0 %}
+{% endif %}
+{% if delivery_slot_management_enabled == 1 %}
+  <script src="{{ _DSM_SERVER_ }}shopify-widget/widget.js"></script>
+  <link rel="stylesheet" href="{{ _DSM_SERVER_ }}shopify-widget/widget.css">
+
+  {{ 'https://bookingcommerce.com/widget/js/tiny-date-picker.min.js' | script_tag }}
+  {{ 'https://bookingcommerce.com/widget/js/moment.js' | script_tag }}
+  {{ 'https://bookingcommerce.com/widget/js/moment-timezone.js' | script_tag }}
+  {{ 'https://bookingcommerce.com/widget/js/moment-timezone-with-data.min.js' | script_tag }}
+
+  <link href="https://bookingcommerce.com/widget/css/tiny-date-picker.css" rel="stylesheet">
+  <link href="https://bookingcommerce.com/widget/css/tiny-daterange-picker.css" rel="stylesheet">
+  <link href="https://bookingcommerce.com/widget/css/font.css" rel="stylesheet">
+
+  {%- assign dsmConfig = shop.metafields.dsm_widget | json -%}
+  {%- assign dsmLabels = shop.metafields.dsm_labels | json -%}
+
+  <script>
+    const dsmVendors = {};
+  </script>
+{% endif %}
+
 <div class="wk-main-conent__split-cart">
   <script src="//ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js" type="text/javascript"></script>
   <input
